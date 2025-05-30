@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
+import Link from 'next/link'; // Import Link
+import { useRouter } from 'next/navigation'; // useRouter is already imported
 
 const generateId = () => `id_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -40,7 +42,8 @@ export default function WaliKelasPage() {
   const [selectedKelas, setSelectedKelas] = useState('');
   const [selectedStudent, setSelectedStudent] = useState('');
   const [filteredStudents, setFilteredStudents] = useState([]);
-  
+  const router = useRouter(); // useRouter instance
+
   const mataPelajaranOptions = [
     'Matematika',
     'Bahasa Indonesia',
@@ -217,14 +220,33 @@ export default function WaliKelasPage() {
         .react-datepicker__current-month, .react-datepicker__day-name { color: #374151; font-weight: 600; }
         .react-datepicker__day { width: 2rem; height: 2rem; line-height: 2rem; margin: 0.2rem; border-radius: 0.25rem; }
       `}</style>
-      <motion.h1
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-2xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-10 text-center"
-      >
-        Input Data Wali Kelas
-      </motion.h1>
+      
+      <div className="relative mb-10"> {/* Wrapper for Back button and Title */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="absolute top-0 left-0" // Position Back button
+        >
+          <Link href="/wali-kelas" legacyBehavior>
+            <a className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow hover:shadow-md transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+              Kembali
+            </a>
+          </Link>
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }} // Slight delay for title
+          className="text-2xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center"
+        >
+          Input Data Wali Kelas
+        </motion.h1>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-10 max-w-4xl mx-auto">
         <motion.div
