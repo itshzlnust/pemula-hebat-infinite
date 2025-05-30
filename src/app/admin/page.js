@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
 
 // Placeholder data - replace with API call in a real application
 const sampleUsersData = [
@@ -39,41 +39,45 @@ const StatCard = ({ title, value, color, iconPlaceholder, delay }) => (
 // Simple Donut Chart Component (CSS-based SVG) with Animation and Hover Effects
 const DonutChart = ({ data }) => {
   const [hoveredInfo, setHoveredInfo] = useState(null);
-  const { AnimatePresence } = motion;
 
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  const total = useMemo(() => data.reduce((sum, item) => sum + item.value, 0), [data]);
+
+  const segments = useMemo(() => {
+    if (total === 0) return [];
+    let cumulativePercentage = 0;
+    return data.map(item => {
+      const percentage = (item.value / total) * 100;
+      const segment = {
+        percentage,
+        color: item.color,
+        offset: cumulativePercentage,
+        label: item.label,
+        value: item.value,
+      };
+      cumulativePercentage += percentage;
+      return segment;
+    });
+  }, [data, total]);
+
   if (total === 0) {
     return <div className="text-center text-gray-500 dark:text-gray-400 py-10">No data for chart.</div>;
   }
 
-  let cumulativePercentage = 0;
-  const segments = data.map(item => {
-    const percentage = (item.value / total) * 100;
-    const segment = {
-      percentage,
-      color: item.color,
-      offset: cumulativePercentage,
-      label: item.label,
-      value: item.value,
-    };
-    cumulativePercentage += percentage;
-    return segment;
-  });
-
   const baseRadius = 15.915494309189532;
   const baseStrokeWidth = 3.8;
   const scaleDownFactor = 1 / 1.1;
-
   const r = baseRadius * scaleDownFactor;
   const strokeWidth = baseStrokeWidth * scaleDownFactor;
+
+  const isSegmentHovered = (segment) => hoveredInfo && hoveredInfo.label === segment.label;
 
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-56 h-56 sm:w-64 sm:h-64">
-        <svg viewBox="0 0 36 36" className="block w-full h-full">
+        <svg viewBox="0 0 36 36" className="block w-full h-full" aria-label="Komposisi Akun Donut Chart">
           {segments.map((segment, index) => (
             <motion.circle
-              key={index}
+              key={segment.label}
               cx="18"
               cy="18"
               r={r}
@@ -82,26 +86,27 @@ const DonutChart = ({ data }) => {
               strokeWidth={strokeWidth}
               strokeDashoffset={25 - segment.offset}
               transform="rotate(-90 18 18)"
-              initial={{ strokeDasharray: "0 100" }}
-              animate={{ strokeDasharray: `${segment.percentage.toFixed(2)} ${ (100 - segment.percentage).toFixed(2)}` }}
-              transition={{
-                strokeDasharray: { duration: 0.8, delay: index * 0.2, ease: "easeOut" }
+              initial={{ strokeDasharray: "0 100", scale: 1 }}
+              animate={{
+                strokeDasharray: `${segment.percentage.toFixed(2)} ${ (100 - segment.percentage).toFixed(2)}`,
+                scale: isSegmentHovered(segment) ? 1.1 : 1
               }}
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
+              transition={{
+                strokeDasharray: { duration: 0.8, delay: index * 0.2, ease: "easeOut" },
+                scale: { duration: 0.2, ease: "circOut" }
+              }}
               onHoverStart={() => {
-                // console.log("Hover start:", segment.label); // Optional: for debugging
-                setHoveredInfo({ 
-                  label: segment.label, 
-                  value: segment.value, 
-                  percentage: segment.percentage 
+                setHoveredInfo({
+                  label: segment.label,
+                  value: segment.value,
+                  percentage: segment.percentage
                 });
               }}
               onHoverEnd={() => {
-                // console.log("Hover end:", segment.label); // Optional: for debugging
                 setHoveredInfo(null);
               }}
-              // Add pointerEvents attribute here
               pointerEvents="visibleStroke"
+              aria-label={`${segment.label}: ${segment.value} (${segment.percentage.toFixed(1)}%)`}
             />
           ))}
         </svg>
@@ -127,7 +132,7 @@ const DonutChart = ({ data }) => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.15, delay: segments.length * 0.2 + 0.3 }}
+                transition={{ duration: 0.15, delay: (segments.length * 0.2) + 0.4 }}
                 className="text-center"
               >
                 <span className="text-2xl font-bold text-gray-800 dark:text-white">{total}</span>
@@ -140,11 +145,11 @@ const DonutChart = ({ data }) => {
       <div className="mt-6 space-y-2 w-full max-w-xs">
         {segments.map((segment, index) => (
           <motion.div
-            key={index}
+            key={segment.label + "-legend"}
             className="flex items-center justify-between text-sm"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 + (segments.length * 0.2), duration: 0.4 }}
+            transition={{ delay: index * 0.1 + (segments.length * 0.2) + 0.2, duration: 0.4 }}
           >
             <div className="flex items-center">
               <span className="w-3 h-3 rounded-full mr-2.5" style={{ backgroundColor: segment.color }}></span>
@@ -163,25 +168,23 @@ export default function AdminDashboardPage() {
   const [userStats, setUserStats] = useState({
     total: 0,
     admin: 0,
-    waliKelas: 0, // Changed from 'guru' to 'Wali Kelas' to match role in data
+    waliKelas: 0,
     orangTua: 0,
   });
 
   useEffect(() => {
-    // Simulate API call or data processing
-    const total = sampleUsersData.length;
-    const admin = sampleUsersData.filter(user => user.role === 'Admin').length;
-    const waliKelas = sampleUsersData.filter(user => user.role === 'Wali Kelas').length;
-    const orangTua = sampleUsersData.filter(user => user.role === 'Orang Tua').length;
-
-    setUserStats({ total, admin, waliKelas, orangTua });
+    const totalAccounts = sampleUsersData.length;
+    const adminAccounts = sampleUsersData.filter(user => user.role === 'Admin').length;
+    const waliKelasAccounts = sampleUsersData.filter(user => user.role === 'Wali Kelas').length;
+    const orangTuaAccounts = sampleUsersData.filter(user => user.role === 'Orang Tua').length;
+    setUserStats({ total: totalAccounts, admin: adminAccounts, waliKelas: waliKelasAccounts, orangTua: orangTuaAccounts });
   }, []);
 
-  const chartData = [
-    { label: 'Admin', value: userStats.admin, color: '#EF4444' }, // Tailwind red-500
-    { label: 'Wali Kelas', value: userStats.waliKelas, color: '#F97316' }, // Tailwind orange-500
-    { label: 'Orang Tua', value: userStats.orangTua, color: '#22C55E' }, // Tailwind green-500
-  ].filter(item => item.value > 0); // Filter out roles with 0 users for cleaner chart
+  const chartData = useMemo(() => [
+    { label: 'Admin', value: userStats.admin, color: '#EF4444' },
+    { label: 'Wali Kelas', value: userStats.waliKelas, color: '#F97316' },
+    { label: 'Orang Tua', value: userStats.orangTua, color: '#22C55E' },
+  ].filter(item => item.value > 0), [userStats]);
 
   return (
     <div>
@@ -199,28 +202,28 @@ export default function AdminDashboardPage() {
         <StatCard
           title="Total Akun"
           value={userStats.total}
-          iconPlaceholder="Σ" // Sigma for Total
+          iconPlaceholder="" // Sigma for Total
           color="border-blue-500"
           delay={0.2}
         />
         <StatCard
           title="Akun Admin"
           value={userStats.admin}
-          iconPlaceholder="A"
+          iconPlaceholder=""
           color="border-red-500"
           delay={0.3}
         />
         <StatCard
           title="Akun Wali Kelas"
           value={userStats.waliKelas}
-          iconPlaceholder="W" // W for Wali Kelas
+          iconPlaceholder="" // W for Wali Kelas
           color="border-orange-500"
           delay={0.4}
         />
         <StatCard
           title="Akun Orang Tua"
           value={userStats.orangTua}
-          iconPlaceholder="O" // O for Orang Tua
+          iconPlaceholder="" // O for Orang Tua
           color="border-green-500"
           delay={0.5}
         />
@@ -234,8 +237,8 @@ export default function AdminDashboardPage() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center"
         >
-          <h2 className="text-xl font-semibold text-gray-700 dark:text-white mb-4 text-center">KomposisiAkun</h2>
-          <DonutChart data={chartData} />
+          <h2 className="text-xl font-semibold text-gray-700 dark:text-white mb-4 text-center">Komposisi Akun</h2>
+          {chartData.length > 0 ? <DonutChart data={chartData} /> : <div className="text-center text-gray-500 dark:text-gray-400 py-10">Loading chart data...</div>}
         </motion.div>
 
         <motion.div
