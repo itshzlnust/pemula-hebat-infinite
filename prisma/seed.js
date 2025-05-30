@@ -1,4 +1,5 @@
-const { PrismaClient, UserRole } = require('@prisma/client'); // Gunakan require untuk CommonJS
+const { PrismaClient, UserRole } = require('@prisma/client');
+const bcrypt = require('bcryptjs'); // Import bcryptjs
 
 const prisma = new PrismaClient();
 
@@ -6,9 +7,8 @@ async function main() {
     console.log(`Start seeding ...`);
 
     // --- Hapus data lama (opsional, hati-hati di produksi!) ---
-    // Urutan penghapusan penting karena adanya foreign key constraints
     await prisma.progressReport.deleteMany({});
-    await prisma.student.deleteMany({}); // Akan menghapus relasi ke parent juga jika onDelete: Cascade
+    await prisma.student.deleteMany({});
     await prisma.subject.deleteMany({});
     await prisma.class.deleteMany({});
     await prisma.admin.deleteMany({});
@@ -17,14 +17,18 @@ async function main() {
     await prisma.user.deleteMany({});
     console.log('Old data deleted.');
 
+    // --- Hash password ---
+    const saltRounds = 10;
+    const defaultPassword = 'password123'; // Definisikan password default
+    const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds); // Hash password sekali
+
     // --- Buat User Admin ---
     const adminUser = await prisma.user.create({
         data: {
             email: 'admin@example.com',
             name: 'Admin Utama',
-            // Di aplikasi nyata, password HARUS di-hash!
-            password: 'password123',
-            role: UserRole.ADMIN, // UserRole tetap bisa diakses
+            password: hashedPassword, // Gunakan password yang sudah di-hash
+            role: UserRole.ADMIN,
             adminProfile: {
                 create: {},
             },
@@ -37,7 +41,7 @@ async function main() {
         data: {
             email: 'guru.budi@example.com',
             name: 'Budi Santoso',
-            password: 'password123',
+            password: hashedPassword, // Gunakan password yang sudah di-hash
             role: UserRole.TEACHER,
             teacherProfile: {
                 create: {
@@ -52,7 +56,7 @@ async function main() {
         data: {
             email: 'guru.siti@example.com',
             name: 'Siti Aminah',
-            password: 'password123',
+            password: hashedPassword, // Gunakan password yang sudah di-hash
             role: UserRole.TEACHER,
             teacherProfile: {
                 create: {
@@ -68,7 +72,7 @@ async function main() {
         data: {
             email: 'ortu.agus@example.com',
             name: 'Agus Setiawan',
-            password: 'password123',
+            password: hashedPassword, // Gunakan password yang sudah di-hash
             role: UserRole.PARENT,
             parentProfile: {
                 create: {},
@@ -81,7 +85,7 @@ async function main() {
         data: {
             email: 'ortu.rini@example.com',
             name: 'Rini Lestari',
-            password: 'password123',
+            password: hashedPassword, // Gunakan password yang sudah di-hash
             role: UserRole.PARENT,
             parentProfile: {
                 create: {},
@@ -96,7 +100,7 @@ async function main() {
             name: 'Kelas 10A',
             year: 2024,
             teacher: {
-                connect: { userId: teacherUser1.id }, // Budi walikelas 10A
+                connect: { userId: teacherUser1.id },
             },
         },
     });
@@ -107,7 +111,7 @@ async function main() {
             name: 'Kelas 11B',
             year: 2024,
             teacher: {
-                connect: { userId: teacherUser2.id }, // Siti walikelas 11B
+                connect: { userId: teacherUser2.id },
             },
         },
     });
@@ -151,7 +155,7 @@ async function main() {
             nis: 'S001',
             class: { connect: { id: class10A.id } },
             parents: {
-                connect: [{ userId: parentUser1.id }], // Andi anak Agus
+                connect: [{ userId: parentUser1.id }],
             },
         },
     });
@@ -163,7 +167,7 @@ async function main() {
             nis: 'S002',
             class: { connect: { id: class10A.id } },
             parents: {
-                connect: [{ userId: parentUser2.id }], // Citra anak Rini
+                connect: [{ userId: parentUser2.id }],
             },
         },
     });
@@ -175,7 +179,7 @@ async function main() {
             nis: 'S003',
             class: { connect: { id: class11B.id } },
             parents: {
-                connect: [{ userId: parentUser1.id }], // Eka juga anak Agus
+                connect: [{ userId: parentUser1.id }],
             },
         },
     });
@@ -188,7 +192,7 @@ async function main() {
             comment: 'Pemahaman konsep sudah baik, perlu latihan soal variatif.',
             student: { connect: { id: studentAndi.id } },
             subject: { connect: { id: mathSubject.id } },
-            teacher: { connect: { userId: teacherUser1.id } }, // Laporan dari Budi
+            teacher: { connect: { userId: teacherUser1.id } },
             reportDate: new Date('2024-03-15T10:00:00Z'),
         },
     });
@@ -199,7 +203,7 @@ async function main() {
             comment: 'Sangat aktif dalam diskusi dan praktikum.',
             student: { connect: { id: studentCitra.id } },
             subject: { connect: { id: scienceSubject.id } },
-            teacher: { connect: { userId: teacherUser1.id } }, // Laporan dari Budi
+            teacher: { connect: { userId: teacherUser1.id } },
             reportDate: new Date('2024-03-16T10:00:00Z'),
         },
     });
@@ -210,7 +214,7 @@ async function main() {
             comment: 'Perlu meningkatkan analisis sumber sejarah primer.',
             student: { connect: { id: studentEka.id } },
             subject: { connect: { id: historySubject.id } },
-            teacher: { connect: { userId: teacherUser2.id } }, // Laporan dari Siti
+            teacher: { connect: { userId: teacherUser2.id } },
             reportDate: new Date('2024-03-17T10:00:00Z'),
         },
     });
