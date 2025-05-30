@@ -16,7 +16,7 @@ enum UserRole {
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String // Ingat untuk melakukan hashing pada password di aplikasi Anda
+  password  String
   name      String
   role      UserRole
   createdAt DateTime @default(now())
@@ -24,7 +24,7 @@ model User {
 
   adminProfile   Admin?
   teacherProfile Teacher?
-  parentProfile  Parent?
+  parent         Parent? // <--- UBAH NAMA RELASI INI (atau sesuaikan di API)
 }
 
 model Admin {
@@ -68,6 +68,8 @@ model Student {
   parents Parent[] @relation("ParentChildren") // Siswa bisa memiliki lebih dari satu orang tua/wali
 
   progressReports ProgressReport[]
+  selfDevelopments SelfDevelopment[] // <--- TAMBAHKAN RELASI INI
+  attendances     Attendance[]      // <--- TAMBAHKAN RELASI INI
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -102,21 +104,69 @@ model Subject {
 
 model ProgressReport {
   id        String   @id @default(cuid())
-  grade     Float    // Nilai bisa berupa angka
-  comment   String?  // Komentar dari guru
-  reportDate DateTime @default(now()) // Tanggal laporan dibuat
+  // Sesuaikan field ini dengan kebutuhan API/Frontend
+  tugas     Float?   // Nilai tugas
+  uts       Float?   // Nilai UTS
+  uas       Float?   // Nilai UAS
+  finalGrade Float?  // Mungkin nilai akhir jika dihitung
+  predicate String?  // Contoh: "Sangat Baik", "Baik", "Cukup"
+  comment   String?
+  reportDate DateTime @default(now())
 
   studentId String
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   subjectId String
-  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict) // Jika subject dihapus, laporan yg terkait tidak bisa ada
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
 
-  teacherId String  // Guru yang menginput laporan
-  teacher   Teacher @relation("TeacherReports", fields: [teacherId], references: [id], onDelete: Restrict) // Jika guru dihapus, laporan yg terkait tidak bisa ada
+  teacherId String
+  teacher   Teacher @relation("TeacherReports", fields: [teacherId], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([studentId, subjectId, reportDate])
+}
+
+// TAMBAHKAN MODEL BARU INI
+model SelfDevelopment {
+  id          String   @id @default(cuid())
+  activity    String   // Nama kegiatan pengembangan diri
+  notes       String?  // Catatan dari guru
+  reportedDate DateTime @default(now())
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  // teacherId String? // Opsional: Guru yang melaporkan
+  // teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// TAMBAHKAN MODEL BARU INI
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  SICK
+  PERMISSION
+}
+
+model Attendance {
+  id        String           @id @default(cuid())
+  date      DateTime         // Tanggal presensi (bisa diatur hanya tanggal tanpa waktu jika perlu)
+  status    AttendanceStatus // Status kehadiran
+  notes     String?          // Catatan tambahan (misalnya alasan izin)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  // recordedById String? // Opsional: User yang mencatat (misalnya guru)
+  // recordedBy User? @relation(fields: [recordedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, date]) // Pastikan satu siswa hanya punya satu catatan presensi per hari
 }

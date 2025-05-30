@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation'
 
 const generateId = () => `id_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -40,6 +41,7 @@ export default function WaliKelasPage() {
   const [selectedKelas, setSelectedKelas] = useState('');
   const [selectedStudent, setSelectedStudent] = useState('');
   const [filteredStudents, setFilteredStudents] = useState([]);
+  const router = useRouter();
 
   const mataPelajaranOptions = [
     'Matematika',
@@ -179,7 +181,7 @@ export default function WaliKelasPage() {
 
   const handleCloseSuccessModal = () => {
     setIsSuccessModalOpen(false);
-    resetFormFields();
+    router.push('/wali-kelas'); // Redirect to the main Wali Kelas page
   };
 
   const sectionVariants = {

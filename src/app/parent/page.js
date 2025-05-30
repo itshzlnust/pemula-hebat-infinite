@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 // Helper function to get month number (0-indexed) from month name - moved outside for clarity
 const getMonthNumber = (monthName) => {
@@ -14,6 +15,7 @@ const DashboardParent = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedChildIndex, setSelectedChildIndex] = useState(0);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchParentDashboardData = async () => {
@@ -26,7 +28,7 @@ const DashboardParent = () => {
                 // 1. Memverifikasi pengguna yang login (misalnya melalui session/token).
                 // 2. Mengambil data anak-anak yang terkait dengan orang tua tersebut dari database.
                 // 3. Mengembalikan data dalam format yang diharapkan.
-                const response = await fetch('/api/parent-dashboard-data'); // GANTI DENGAN ENDPOINT API ANDA
+                const response = await fetch('/api/parent',); // GANTI DENGAN ENDPOINT API ANDA
 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({ message: 'Gagal mengambil data dashboard.' }));
@@ -60,9 +62,7 @@ const DashboardParent = () => {
     };
 
     const handleLogout = () => {
-        console.log("Logout clicked");
-        // Implementasikan logika logout di sini (misalnya, panggil API logout, hapus session, redirect ke /login)
-        // Contoh: router.push('/login'); (jika Anda menggunakan useRouter dari next/navigation)
+        router.push('/login');
     };
 
     const getScoreColor = (score) => {
