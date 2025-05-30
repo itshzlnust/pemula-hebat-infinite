@@ -5,10 +5,10 @@ import { useState } from 'react';
 
 export default function CreateAccountPage() {
   const [formData, setFormData] = useState({
-    username: '', // Added username
+    username: '',
     email: '',
     password: '',
-    role: 'user', // Default role, ensure this matches one of your <option> values
+    role: 'admin',
   });
 
   const handleChange = (e) => {
@@ -21,15 +21,16 @@ export default function CreateAccountPage() {
     console.log('Form data submitted:', formData);
     alert('Account creation functionality not yet implemented. Check console for data.');
     // Reset form or provide feedback
+    setFormData({ username: '', email: '', password: '', role: 'admin' }); // Reset form
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-start min-h-screen pt-16 pb-8"> {/* Changed justify-center to justify-start and updated padding */}
       <motion.h1
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="text-3xl font-semibold text-gray-800 dark:text-white mb-6"
+        className="text-3xl font-semibold text-gray-800 dark:text-white mb-6 text-center"
       >
         Create New Account
       </motion.h1>
@@ -38,7 +39,7 @@ export default function CreateAccountPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg"
+        className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg mx-auto"
       >
         <div className="mb-5">
           <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2" htmlFor="username">
@@ -96,7 +97,8 @@ export default function CreateAccountPage() {
             onChange={handleChange}
             className="shadow-sm appearance-none border border-gray-300 dark:border-gray-600 rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 dark:bg-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="admin">Admin</option> {/* Changed from user to admin to match your screenshot */}
+            <option value="admin">Admin</option>
+            <option value="wali_kelas">Wali Kelas</option>
             <option value="orang_tua">Orang Tua</option>
           </select>
         </div>
