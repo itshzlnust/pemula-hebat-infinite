@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // Import AnimatePresence
 
 const DashOrtu = () => {
+  // Placeholder data - replace with actual data fetched from API
+  // Updated data structure to support multiple children
   const allChildrenData = [
     {
       id: 1,
@@ -81,14 +83,22 @@ const DashOrtu = () => {
     },
   ];
 
-  const [selectedChildIndex, setSelectedChildIndex] = useState(0);
-  const childData = allChildrenData[selectedChildIndex]; 
+  const [selectedChildIndex, setSelectedChildIndex] = useState(0); // State to track selected child index
+  const childData = allChildrenData[selectedChildIndex]; // Get data for the currently selected child
 
+  // Function to handle child selection change
   const handleChildChange = (event) => {
     setSelectedChildIndex(parseInt(event.target.value, 10));
   };
 
+  // Function to handle logout (placeholder)
+  const handleLogout = () => {
+    console.log("Logout clicked");
+    // Implement actual logout logic here (e.g., clear session, redirect)
+  };
 
+
+  // Function to get color based on score
   const getScoreColor = (score) => {
     if (score >= 80) {
       return 'bg-green-500';
@@ -99,6 +109,7 @@ const DashOrtu = () => {
     }
   };
 
+  // Function to get color for attendance status
   const getAttendanceColor = (status) => {
     switch (status) {
       case 'present':
@@ -109,20 +120,23 @@ const DashOrtu = () => {
       case 'permission':
         return 'bg-yellow-500';
       default:
-        return 'bg-gray-400';
+        return 'bg-gray-400'; // Light grey for unknown status or non-recorded days
     }
   };
 
+  // Define animation variants for sections
   const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
 
+  // Define animation variants for list items (e.g., table rows or calendar days)
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
   };
 
+  // Helper function to get month number (0-indexed) from month name
   const getMonthNumber = (monthName) => {
     const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     return months.indexOf(monthName);
@@ -130,25 +144,36 @@ const DashOrtu = () => {
 
 
   return (
+    // Use motion.div for the main container with initial animation
     <motion.div
-      className="min-h-screen bg-gray-900 text-gray-100 p-4 sm:p-6 lg:p-8"
+      className="min-h-screen bg-gray-900 text-gray-100 p-4 sm:p-6 lg:p-8" // Adjusted padding
       initial="hidden"
       animate="visible"
       variants={{
-        visible: { transition: { staggerChildren: 0.1 } } 
+        visible: { transition: { staggerChildren: 0.1 } } // Stagger children animations
       }}
     >
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-100">Dashboard Orang Tua</h1>
+      {/* Header with Title and Logout Button */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-100">Dashboard Orang Tua</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+        >
+          Logout
+        </button>
+      </div>
 
-      {/*Informasi Dasar*/}
+
+      {/* Informasi Anak Section */}
       <motion.div
-        className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6 mb-6 grid grid-cols-1 md:grid-cols-2 gap-6" 
+        className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6 mb-6 grid grid-cols-1 md:grid-cols-2 gap-6" // Adjusted padding, added grid layout
         variants={sectionVariants}
       >
-        {/*Informasi anak*/}
+        {/* Left Column: Child Information */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-gray-100">Informasi Anak</h2>
-          <p className="text-gray-300 mb-2">
+          <p className="text-gray-300 mb-2"> {/* Added margin-bottom */}
             <span className="font-medium">Nama:</span> {childData.name}
           </p>
           <p className="text-gray-300">
@@ -156,8 +181,8 @@ const DashOrtu = () => {
           </p>
         </div>
 
-        {/*Pilih Siswa*/}
-        {allChildrenData.length > 1 && (
+        {/* Right Column: Child Selection */}
+        {allChildrenData.length > 1 && ( // Only show selection if there's more than one child
           <div>
             <h2 className="text-xl font-semibold mb-4 text-gray-100">Pilih Anak</h2>
             <select
@@ -175,9 +200,9 @@ const DashOrtu = () => {
         )}
       </motion.div>
 
-      {/*Progress Pembelajaran*/}
+      {/* Progress Pembelajaran Section */}
       <motion.div
-        className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6 mb-6"
+        className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6 mb-6" // Adjusted padding, added mb-6 for spacing below
         variants={sectionVariants}
       >
         <h2 className="text-xl font-semibold mb-4 text-gray-100">Progress Pembelajaran</h2>
@@ -187,44 +212,49 @@ const DashOrtu = () => {
             <table className="min-w-full divide-y divide-gray-700">
               <thead className="bg-gray-700">
                 <tr>
-                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                     Mata Pelajaran
                   </th>
-                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                  {/* Changed headers */}
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                     Tugas
                   </th>
-                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                     UTS
                   </th>
-                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                     UAS
                   </th>
-                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                  {/* Changed header */}
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                     Status
                   </th>
-                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                     Nama Guru
                   </th>
                 </tr>
               </thead>
+              {/* Add key to tbody to force re-render and re-trigger animations */}
               <motion.tbody
+                key={selectedChildIndex} // Add key here
                 className="bg-gray-800 divide-y divide-gray-700"
                 initial="hidden"
                 animate="visible"
                 variants={{
-                  visible: { transition: { staggerChildren: 0.05 } }
+                  visible: { transition: { staggerChildren: 0.05 } } // Stagger row animations
                 }}
               >
                 {childData.progress.map((item, index) => (
                   <motion.tr
                     key={index}
                     className="hover:bg-gray-700 transition duration-150 ease-in-out"
-                    variants={itemVariants}
+                    variants={itemVariants} // Apply item animation
                   >
-                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-100"> {/* Adjusted padding */}
                       {item.subject}
                     </td>
-                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> 
+                    {/* Added progress bar to Tugas */}
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> {/* Adjusted padding */}
                       <div className="flex items-center">
                         <span className="mr-2">{item.tugas}</span>
                         <div className="w-24 bg-gray-600 rounded-full h-2">
@@ -237,7 +267,8 @@ const DashOrtu = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300">
+                    {/* Added progress bar to UTS */}
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> {/* Adjusted padding */}
                        <div className="flex items-center">
                         <span className="mr-2">{item.uts}</span>
                         <div className="w-24 bg-gray-600 rounded-full h-2">
@@ -250,7 +281,8 @@ const DashOrtu = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300">
+                    {/* Added progress bar to UAS */}
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> {/* Adjusted padding */}
                        <div className="flex items-center">
                         <span className="mr-2">{item.uas}</span>
                         <div className="w-24 bg-gray-600 rounded-full h-2">
@@ -263,10 +295,11 @@ const DashOrtu = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> 
+                    {/* Changed displayed data */}
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> {/* Adjusted padding */}
                       {item.predicate}
                     </td>
-                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-wrap text-sm text-gray-300"> 
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-wrap text-sm text-gray-300"> {/* Adjusted padding */}
                       {item.teacherName}
                     </td>
                   </motion.tr>
@@ -279,10 +312,11 @@ const DashOrtu = () => {
         )}
       </motion.div>
 
+      {/* Grid container for Self Development and Attendance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/*Pengembangan Diri*/}
+        {/* Pengembangan Diri Section */}
         <motion.div
-          className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6"
+          className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6" // Adjusted padding
           variants={sectionVariants}
         >
           <h2 className="text-xl font-semibold mb-4 text-gray-100">Pengembangan Diri</h2>
@@ -292,32 +326,34 @@ const DashOrtu = () => {
               <table className="min-w-full divide-y divide-gray-700">
                 <thead className="bg-gray-700">
                   <tr>
-                    <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                    <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                       Kegiatan
                     </th>
-                    <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                    <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> {/* Adjusted padding */}
                       Catatan Guru
                     </th>
                   </tr>
                 </thead>
+                {/* Add key to tbody to force re-render and re-trigger animations */}
                 <motion.tbody
+                   key={selectedChildIndex} // Add key here
                    className="bg-gray-800 divide-y divide-gray-700"
                    initial="hidden"
                    animate="visible"
                    variants={{
-                     visible: { transition: { staggerChildren: 0.05 } }
+                     visible: { transition: { staggerChildren: 0.05 } } // Stagger row animations
                    }}
                 >
                   {childData.selfDevelopment.map((item, index) => (
                     <motion.tr
                       key={index}
                       className="hover:bg-gray-700 transition duration-150 ease-in-out"
-                      variants={itemVariants}
+                      variants={itemVariants} // Apply item animation
                     >
-                      <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                      <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-100"> {/* Adjusted padding */}
                         {item.activity}
                       </td>
-                      <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-wrap text-sm text-gray-300"> 
+                      <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-wrap text-sm text-gray-300"> {/* Adjusted padding */}
                         {item.notes}
                       </td>
                     </motion.tr>
@@ -330,9 +366,9 @@ const DashOrtu = () => {
           )}
         </motion.div>
 
-        {/*Kalender Presensi*/}
+        {/* Kalender Presensi Section */}
         <motion.div
-          className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6"
+          className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6" // Adjusted padding
           variants={sectionVariants}
         >
           <h2 className="text-xl font-semibold mb-4 text-gray-100">Kalender Presensi</h2>
@@ -340,42 +376,47 @@ const DashOrtu = () => {
             <div className="space-y-6">
               {childData.attendance.map((monthData, monthIndex) => {
                 const [monthName, year] = monthData.month.split(' ');
-                const monthNumber = getMonthNumber(monthName); 
+                const monthNumber = getMonthNumber(monthName); // 0-indexed
                 const daysInMonth = new Date(year, monthNumber + 1, 0).getDate();
-                const firstDayOfMonth = new Date(year, monthNumber, 1).getDay();
+                const firstDayOfMonth = new Date(year, monthNumber, 1).getDay(); // 0 for Sunday, 6 for Saturday
 
+                // Create an array for all days of the month
                 const allDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
                 return (
                   <div key={monthIndex}>
                     <h3 className="text-lg font-medium mb-3 text-gray-200">{monthData.month}</h3>
                     <div className="grid grid-cols-7 gap-1 text-center text-xs sm:text-sm">
+                      {/* Weekday Headers */}
                       {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map(day => (
                         <div key={day} className="font-semibold text-gray-400">{day}</div>
                       ))}
-                      {/*Kalender*/}
+                      {/* Calendar Days */}
+                      {/* Add empty divs for days before the 1st */}
                       {Array.from({ length: firstDayOfMonth }).map((_, i) => (
                           <div key={`empty-${monthIndex}-${i}`}></div>
                       ))}
                       {allDays.map((day) => {
                         const currentDate = new Date(year, monthNumber, day);
-                        const currentDayOfWeek = currentDate.getDay(); 
+                        const currentDayOfWeek = currentDate.getDay(); // 0 for Sunday, 6 for Saturday
 
+                        // Find the attendance status for the current day
                         const dayStatusEntry = monthData.dailyStatus.find(status => status.day === day);
                         const status = dayStatusEntry ? dayStatusEntry.status : 'belum terisi';
 
+                        // Determine the background class based on day of week and status
                         let dayBgClass = '';
                         if (currentDayOfWeek === 0 || currentDayOfWeek === 6) {
-                          dayBgClass = 'bg-gray-700';
+                          dayBgClass = 'bg-gray-700'; // Dark grey for weekends
                         } else {
-                          dayBgClass = getAttendanceColor(status);
+                          dayBgClass = getAttendanceColor(status); // Green, Red, Yellow, or Light Grey for weekdays
                         }
 
                         return (
                           <motion.div
                             key={day}
                             className={`p-1 rounded-sm flex items-center justify-center ${dayBgClass} text-gray-900 font-bold`}
-                            variants={itemVariants} 
+                            variants={itemVariants} // Apply item animation
                           >
                             {day}
                           </motion.div>
@@ -399,6 +440,7 @@ const DashOrtu = () => {
   );
 };
 
+// Helper function to get month number (0-indexed) from month name
 const getMonthNumber = (monthName) => {
   const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   return months.indexOf(monthName);
