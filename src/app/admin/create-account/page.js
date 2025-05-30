@@ -97,7 +97,6 @@ export default function CreateAccountPage() {
             className="shadow-sm appearance-none border border-gray-300 dark:border-gray-600 rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 dark:bg-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="admin">Admin</option> {/* Changed from user to admin to match your screenshot */}
-            <option value="guru">Guru</option>
             <option value="orang_tua">Orang Tua</option>
           </select>
         </div>

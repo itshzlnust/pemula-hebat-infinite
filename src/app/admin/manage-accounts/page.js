@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 const sampleUsers = [
   { id: 1, username: 'john.admin', email: 'john.doe@example.com', role: 'Admin', joined: '2023-01-15' },
   { id: 2, username: 'jane.parent', email: 'jane.smith@example.com', role: 'Orang Tua', joined: '2023-02-20' },
-  { id: 3, username: 'bob.teacher', email: 'bob.johnson@example.com', role: 'Guru', joined: '2023-03-10' },
+  { id: 3, username: 'bob.teacher', email: 'bob.johnson@example.com', role: 'Wali Kelas', joined: '2023-03-10' },
 ];
 
 export default function ManageAccountsPage() {
@@ -79,7 +79,7 @@ export default function ManageAccountsPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.role === 'Guru' ? 'bg-orange-100 text-orange-800 dark:bg-orange-600 dark:text-orange-100' :
+                      user.role === 'Wali Kelas' ? 'bg-orange-100 text-orange-800 dark:bg-orange-600 dark:text-orange-100' :
                       user.role === 'Orang Tua' ? 'bg-green-100 text-green-800 dark:bg-green-600 dark:text-green-100' :
                       user.role === 'Admin' ? 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-100' :
                       'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-100' // Default color
