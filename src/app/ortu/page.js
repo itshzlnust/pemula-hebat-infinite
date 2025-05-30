@@ -1,67 +1,93 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 const DashOrtu = () => {
-  // Placeholder data - replace with actual data fetched from API
-  // Added dailyStatus array for visual calendar representation
-  const childData = {
-    name: 'Nama Anak',
-    grade: 'Kelas X',
-    progress: [
-      { subject: 'Matematika', score: 85, status: 'Baik', notes: 'Memahami konsep dasar dengan baik.' },
-      { subject: 'Bahasa Inggris', score: 92, status: 'Sangat Baik', notes: 'Aktif dalam diskusi kelas.' },
-      { subject: 'Fisika', score: 78, status: 'Cukup', notes: 'Perlu latihan tambahan pada soal cerita.' },
-      { subject: 'Kimia', score: 60, status: 'Kurang', notes: 'Perlu bimbingan intensif.' },
-    ],
-    selfDevelopment: [
-      { activity: 'Pramuka', status: 'Aktif', notes: 'Mengikuti kegiatan rutin dengan antusias.' },
-      { activity: 'Lomba Sains Tingkat Kota', status: 'Peserta', notes: 'Berpartisipasi dan mendapatkan pengalaman berharga.' },
-    ],
-    character: [
-      { aspect: 'Kedisiplinan', rating: 'Baik', notes: 'Selalu datang tepat waktu.' },
-      { aspect: 'Kerja Sama', rating: 'Sangat Baik', notes: 'Aktif membantu teman dalam tugas kelompok.' },
-      { aspect: 'Inisiatif', rating: 'Cukup', notes: 'Perlu dorongan untuk mengambil inisiatif.' },
-    ],
-    attendance: [
-      {
-        month: 'Mei 2025',
-        present: 20,
-        absent: 1,
-        sick: 0,
-        permission: 0,
-        notes: 'Satu hari izin karena keperluan keluarga.',
-        // Sample daily status - replace with actual daily data
-        dailyStatus: [
-          { day: 1, status: 'present' }, { day: 2, status: 'present' }, { day: 3, status: 'present' }, { day: 4, status: 'present' }, { day: 5, status: 'present' },
-          { day: 6, status: 'present' }, { day: 7, status: 'present' }, { day: 8, status: 'present' }, { day: 9, status: 'present' }, { day: 10, status: 'present' },
-          { day: 11, status: 'present' }, { day: 12, status: 'present' }, { day: 13, status: 'present' }, { day: 14, status: 'present' }, { day: 15, status: 'present' },
-          { day: 16, status: 'present' }, { day: 17, status: 'present' }, { day: 18, status: 'present' }, { day: 19, status: 'present' }, { day: 20, status: 'present' },
-          { day: 21, status: 'absent' }, // Example absent day
-          { day: 22, status: 'present' }, { day: 23, status: 'present' }, { day: 24, status: 'present' }, { day: 25, status: 'present' },
-          { day: 26, status: 'present' }, { day: 27, status: 'present' }, { day: 28, status: 'present' }, { day: 29, status: 'present' }, { day: 30, status: 'present' },
-          { day: 31, status: 'present' },
-        ]
-      },
-      {
-        month: 'April 2025',
-        present: 22,
-        absent: 0,
-        sick: 0,
-        permission: 0,
-        notes: '-',
-        // Sample daily status - replace with actual daily data
-         dailyStatus: [
-          { day: 1, status: 'present' }, { day: 2, status: 'present' }, { day: 3, status: 'present' }, { day: 4, status: 'present' }, { day: 5, status: 'present' },
-          { day: 6, status: 'present' }, { day: 7, status: 'present' }, { day: 8, status: 'present' }, { day: 9, status: 'present' }, { day: 10, status: 'present' },
-          { day: 11, status: 'present' }, { day: 12, status: 'present' }, { day: 13, status: 'present' }, { day: 14, status: 'present' }, { day: 15, status: 'present' },
-          { day: 16, status: 'present' }, { day: 17, status: 'present' }, { day: 18, status: 'present' }, { day: 19, status: 'present' }, { day: 20, status: 'present' },
-          { day: 21, status: 'present' }, { day: 22, status: 'present' }, { day: 23, status: 'present' }, { day: 24, status: 'present' }, { day: 25, status: 'present' },
-          { day: 26, status: 'present' }, { day: 27, status: 'present' }, { day: 28, status: 'present' }, { day: 29, status: 'present' }, { day: 30, status: 'present' },
-        ]
-      },
-    ],
+  const allChildrenData = [
+    {
+      id: 1,
+      name: 'Nama Anak 1',
+      grade: 'Kelas X',
+      progress: [
+        { subject: 'Matematika', tugas: 85, uts: 80, uas: 88, predicate: 'A', teacherName: 'Budi Santoso S.Pd' },
+        { subject: 'Bahasa Inggris', tugas: 90, uts: 95, uas: 92, predicate: 'A', teacherName: 'Siti Alya S.Pd' },
+        { subject: 'IPA Terpadu', tugas: 70, uts: 78, uas: 75, predicate: 'B', teacherName: 'Agustiawan Ramadhani S.Pd' },
+        { subject: 'PPKn', tugas: 88, uts: 85, uas: 90, predicate: 'A', teacherName: 'Dewi Lestari S.Pd' },
+        { subject: 'Bahasa Indonesia', tugas: 92, uts: 89, uas: 90, predicate: 'A', teacherName: 'Rizky Pratama S.Pd' },
+        { subject: 'IPS Terpadu', tugas: 80, uts: 85, uas: 82, predicate: 'B', teacherName: 'Ahmad Fauzi S.Pd' },
+        { subject: 'Seni Budaya', tugas: 95, uts: 94, uas: 96, predicate: 'A', teacherName: 'Maya Sari S.Sn' },
+        { subject: 'Pendidikan Jasmani', tugas: 88, uts: 90, uas: 89, predicate: 'A', teacherName: 'Joko Susilo S.Pd' },
+      ],
+      selfDevelopment: [
+        { activity: 'Pramuka', notes: 'Mengikuti kegiatan rutin dengan antusias.' },
+        { activity: 'Lomba Sains Tingkat Kota', notes: 'Berpartisipasi dan mendapatkan pengalaman berharga.' },
+      ],
+      attendance: [
+        {
+          month: 'Mei 2025',
+          present: 20, absent: 1, sick: 0, permission: 0, notes: 'Satu hari izin karena keperluan keluarga.',
+          dailyStatus: [
+            { day: 1, status: 'present' }, { day: 2, status: 'present' }, { day: 3, status: 'present' }, { day: 4, status: 'present' }, { day: 5, status: 'present' },
+            { day: 6, status: 'present' }, { day: 7, status: 'present' }, { day: 8, status: 'present' }, { day: 9, status: 'present' }, { day: 10, status: 'present' },
+            { day: 11, status: 'present' }, { day: 12, status: 'present' }, { day: 13, status: 'present' }, { day: 14, status: 'present' }, { day: 15, status: 'present' },
+            { day: 16, status: 'present' }, { day: 17, status: 'present' }, { day: 18, status: 'present' }, { day: 19, status: 'present' }, { day: 20, status: 'present' },
+            { day: 21, status: 'absent' },
+            { day: 22, status: 'present' }, { day: 23, status: 'present' }, { day: 24, status: 'present' }, { day: 25, status: 'present' },
+            { day: 26, status: 'present' }, { day: 27, status: 'present' }, { day: 28, status: 'present' }, { day: 29, status: 'present' }, { day: 30, status: 'present' },
+            { day: 31, status: 'present' },
+          ]
+        },
+        {
+          month: 'April 2025',
+          present: 22, absent: 0, sick: 0, permission: 0, notes: '-',
+           dailyStatus: [
+            { day: 1, status: 'present' }, { day: 2, status: 'present' }, { day: 3, status: 'present' }, { day: 4, status: 'present' }, { day: 5, status: 'present' },
+            { day: 6, status: 'present' }, { day: 7, status: 'present' }, { day: 8, status: 'present' }, { day: 9, status: 'present' }, { day: 10, status: 'present' },
+            { day: 11, status: 'present' }, { day: 12, status: 'present' }, { day: 13, status: 'present' }, { day: 14, status: 'present' }, { day: 15, status: 'present' },
+            { day: 16, status: 'present' }, { day: 17, status: 'present' }, { day: 18, status: 'present' }, { day: 19, status: 'present' }, { day: 20, status: 'present' },
+            { day: 21, status: 'present' }, { day: 22, status: 'present' }, { day: 23, status: 'present' }, { day: 24, status: 'present' }, { day: 25, status: 'present' },
+            { day: 26, status: 'present' }, { day: 27, status: 'present' }, { day: 28, status: 'present' }, { day: 29, status: 'present' }, { day: 30, status: 'present' },
+          ]
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: 'Nama Anak 2',
+      grade: 'Kelas XI',
+      progress: [
+        { subject: 'Fisika', tugas: 75, uts: 70, uas: 78, predicate: 'B', teacherName: 'Cahyo Utomo S.Pd' },
+        { subject: 'Kimia', tugas: 88, uts: 85, uas: 90, predicate: 'A', teacherName: 'Nurul Huda S.Pd' },
+      ],
+      selfDevelopment: [
+        { activity: 'Olimpiade Fisika', notes: 'Persiapan intensif untuk lomba.' },
+      ],
+      attendance: [
+        {
+          month: 'Mei 2025',
+          present: 18, absent: 0, sick: 2, permission: 1, notes: 'Sakit 2 hari, izin 1 hari.',
+          dailyStatus: [
+            { day: 1, status: 'present' }, { day: 2, status: 'present' }, { day: 3, status: 'present' }, { day: 4, status: 'present' }, { day: 5, status: 'present' },
+            { day: 6, status: 'present' }, { day: 7, status: 'present' }, { day: 8, status: 'present' }, { day: 9, status: 'present' }, { day: 10, status: 'present' },
+            { day: 11, status: 'present' }, { day: 12, status: 'present' }, { day: 13, status: 'sick' }, { day: 14, status: 'sick' }, { day: 15, status: 'present' },
+            { day: 16, status: 'present' }, { day: 17, status: 'present' }, { day: 18, status: 'present' }, { day: 19, status: 'present' }, { day: 20, status: 'present' },
+            { day: 21, status: 'present' }, { day: 22, status: 'present' }, { day: 23, status: 'present' }, { day: 24, status: 'present' }, { day: 25, status: 'present' },
+            { day: 26, status: 'permission' }, { day: 27, status: 'present' }, { day: 28, status: 'present' }, { day: 29, status: 'present' }, { day: 30, status: 'present' },
+            { day: 31, status: 'present' },
+          ]
+        },
+      ],
+    },
+  ];
+
+  const [selectedChildIndex, setSelectedChildIndex] = useState(0);
+  const childData = allChildrenData[selectedChildIndex]; 
+
+  const handleChildChange = (event) => {
+    setSelectedChildIndex(parseInt(event.target.value, 10));
   };
+
 
   const getScoreColor = (score) => {
     if (score >= 80) {
@@ -73,7 +99,6 @@ const DashOrtu = () => {
     }
   };
 
-  // Function to get color for attendance status
   const getAttendanceColor = (status) => {
     switch (status) {
       case 'present':
@@ -84,43 +109,77 @@ const DashOrtu = () => {
       case 'permission':
         return 'bg-yellow-500';
       default:
-        return 'bg-gray-600'; // Default color for unknown status or non-recorded days
+        return 'bg-gray-400';
     }
   };
 
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  };
 
-  // State to manage animated widths for progress bars
-  const [animatedWidths, setAnimatedWidths] = useState({});
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
 
-  useEffect(() => {
-    // Animate widths after component mounts
-    const timer = setTimeout(() => {
-      const initialWidths = {};
-      childData.progress.forEach((item, index) => {
-        initialWidths[index] = item.score;
-      });
-      setAnimatedWidths(initialWidths);
-    }, 100); // Small delay to ensure transition works
+  const getMonthNumber = (monthName) => {
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    return months.indexOf(monthName);
+  };
 
-    return () => clearTimeout(timer);
-  }, [childData.progress]); // Re-run if progress data changes
 
   return (
-    // Remove container mx-auto
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-6 text-gray-100">Dashboard Orang Tua</h1>
+    <motion.div
+      className="min-h-screen bg-gray-900 text-gray-100 p-4 sm:p-6 lg:p-8"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        visible: { transition: { staggerChildren: 0.1 } } 
+      }}
+    >
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-100">Dashboard Orang Tua</h1>
 
-      <div className="bg-gray-800 shadow-md rounded-lg p-6 mb-6 transition-opacity duration-700 ease-in opacity-100 animate-fadeIn">
-        <h2 className="text-xl font-semibold mb-4 text-gray-100">Informasi Anak</h2>
-        <p className="text-gray-300">
-          <span className="font-medium">Nama:</span> {childData.name}
-        </p>
-        <p className="text-gray-300">
-          <span className="font-medium">Kelas:</span> {childData.grade}
-        </p>
-      </div>
+      {/*Informasi Dasar*/}
+      <motion.div
+        className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6 mb-6 grid grid-cols-1 md:grid-cols-2 gap-6" 
+        variants={sectionVariants}
+      >
+        {/*Informasi anak*/}
+        <div>
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Informasi Anak</h2>
+          <p className="text-gray-300 mb-2">
+            <span className="font-medium">Nama:</span> {childData.name}
+          </p>
+          <p className="text-gray-300">
+            <span className="font-medium">Kelas:</span> {childData.grade}
+          </p>
+        </div>
 
-      <div className="bg-gray-800 shadow-md rounded-lg p-6 mb-6 transition-opacity duration-700 ease-in opacity-100 animate-fadeIn delay-150">
+        {/*Pilih Siswa*/}
+        {allChildrenData.length > 1 && (
+          <div>
+            <h2 className="text-xl font-semibold mb-4 text-gray-100">Pilih Anak</h2>
+            <select
+              className="block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-100"
+              value={selectedChildIndex}
+              onChange={handleChildChange}
+            >
+              {allChildrenData.map((child, index) => (
+                <option key={child.id} value={index}>
+                  {child.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </motion.div>
+
+      {/*Progress Pembelajaran*/}
+      <motion.div
+        className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6 mb-6"
+        variants={sectionVariants}
+      >
         <h2 className="text-xl font-semibold mb-4 text-gray-100">Progress Pembelajaran</h2>
 
         {childData.progress.length > 0 ? (
@@ -128,179 +187,222 @@ const DashOrtu = () => {
             <table className="min-w-full divide-y divide-gray-700">
               <thead className="bg-gray-700">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
                     Mata Pelajaran
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Nilai/Skor
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                    Tugas
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                    UTS
+                  </th>
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                    UAS
+                  </th>
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Catatan Guru
+                  <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                    Nama Guru
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-gray-800 divide-y divide-gray-700">
+              <motion.tbody
+                className="bg-gray-800 divide-y divide-gray-700"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: { transition: { staggerChildren: 0.05 } }
+                }}
+              >
                 {childData.progress.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-700 transition duration-150 ease-in-out">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                  <motion.tr
+                    key={index}
+                    className="hover:bg-gray-700 transition duration-150 ease-in-out"
+                    variants={itemVariants}
+                  >
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-100">
                       {item.subject}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> 
                       <div className="flex items-center">
-                        <span className="mr-2">{item.score}</span>
-                        {/* Progress bar graphic */}
+                        <span className="mr-2">{item.tugas}</span>
                         <div className="w-24 bg-gray-600 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full transition-all duration-500 ease-in-out ${getScoreColor(item.score)}`}
-                            // Use animated width from state, default to 0
-                            style={{ width: `${animatedWidths[index] || 0}%` }}
-                          ></div>
+                          <motion.div
+                            className={`h-2 rounded-full ${getScoreColor(item.tugas)}`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.tugas}%` }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                          ></motion.div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {item.status}
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300">
+                       <div className="flex items-center">
+                        <span className="mr-2">{item.uts}</span>
+                        <div className="w-24 bg-gray-600 rounded-full h-2">
+                          <motion.div
+                            className={`h-2 rounded-full ${getScoreColor(item.uts)}`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.uts}%` }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                          ></motion.div>
+                        </div>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-wrap text-sm text-gray-300">
-                      {item.notes}
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300">
+                       <div className="flex items-center">
+                        <span className="mr-2">{item.uas}</span>
+                        <div className="w-24 bg-gray-600 rounded-full h-2">
+                          <motion.div
+                            className={`h-2 rounded-full ${getScoreColor(item.uas)}`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.uas}%` }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                          ></motion.div>
+                        </div>
+                      </div>
                     </td>
-                  </tr>
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-300"> 
+                      {item.predicate}
+                    </td>
+                    <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-wrap text-sm text-gray-300"> 
+                      {item.teacherName}
+                    </td>
+                  </motion.tr>
                 ))}
-              </tbody>
+              </motion.tbody>
             </table>
           </div>
         ) : (
           <p className="text-gray-500">Belum ada data progress pembelajaran.</p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="bg-gray-800 shadow-md rounded-lg p-6 mb-6 transition-opacity duration-700 ease-in opacity-100 animate-fadeIn delay-300">
-        <h2 className="text-xl font-semibold mb-4 text-gray-100">Pengembangan Diri</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/*Pengembangan Diri*/}
+        <motion.div
+          className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6"
+          variants={sectionVariants}
+        >
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Pengembangan Diri</h2>
 
-        {childData.selfDevelopment.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-gray-700">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Kegiatan
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Catatan Guru
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-gray-800 divide-y divide-gray-700">
-                {childData.selfDevelopment.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-700 transition duration-150 ease-in-out">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                      {item.activity}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {item.status}
-                    </td>
-                    <td className="px-6 py-4 whitespace-wrap text-sm text-gray-300">
-                      {item.notes}
-                    </td>
+          {childData.selfDevelopment.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-700">
+                <thead className="bg-gray-700">
+                  <tr>
+                    <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                      Kegiatan
+                    </th>
+                    <th scope="col" className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"> 
+                      Catatan Guru
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500">Belum ada data pengembangan diri.</p>
-        )}
-      </div>
-
-      <div className="bg-gray-800 shadow-md rounded-lg p-6 mb-6 transition-opacity duration-700 ease-in opacity-100 animate-fadeIn delay-500">
-        <h2 className="text-xl font-semibold mb-4 text-gray-100">Karakter</h2>
-
-        {childData.character.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-gray-700">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Aspek
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Penilaian
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Catatan Guru
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-gray-800 divide-y divide-gray-700">
-                {childData.character.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-700 transition duration-150 ease-in-out">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                      {item.aspect}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {item.rating}
-                    </td>
-                    <td className="px-6 py-4 whitespace-wrap text-sm text-gray-300">
-                      {item.notes}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500">Belum ada data karakter.</p>
-        )}
-      </div>
-
-      {/* Attendance Section - Changed to visual calendar summary per month */}
-      <div className="bg-gray-800 shadow-md rounded-lg p-6 mb-6 transition-opacity duration-700 ease-in opacity-100 animate-fadeIn delay-700">
-        <h2 className="text-xl font-semibold mb-4 text-gray-100">Presensi</h2>
-
-        {childData.attendance.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {childData.attendance.map((monthData, monthIndex) => (
-              <div key={monthIndex} className="bg-gray-700 rounded-md p-4 hover:bg-gray-600 transition duration-150 ease-in-out">
-                <h3 className="text-lg font-semibold mb-3 text-gray-100">{monthData.month}</h3>
-                {/* Simple legend */}
-                 <div className="flex justify-center space-x-4 text-xs text-gray-300 mb-4">
-                    <span className="flex items-center"><span className="inline-block w-3 h-3 rounded-full bg-green-500 mr-1"></span> Hadir</span>
-                    <span className="flex items-center"><span className="inline-block w-3 h-3 rounded-full bg-red-500 mr-1"></span> Alpa</span>
-                    <span className="flex items-center"><span className="inline-block w-3 h-3 rounded-full bg-yellow-500 mr-1"></span> Sakit/Izin</span>
-                 </div>
-                {/* Calendar grid - using flex wrap for simplicity */}
-                <div className="flex flex-wrap gap-1">
-                  {monthData.dailyStatus.map((dayData, dayIndex) => (
-                    <div
-                      key={dayIndex}
-                      className={`w-6 h-6 rounded-sm flex items-center justify-center text-xs font-medium text-gray-900 ${getAttendanceColor(dayData.status)}`}
-                      title={`Day ${dayData.day}: ${dayData.status}`} // Add tooltip for detail
+                </thead>
+                <motion.tbody
+                   className="bg-gray-800 divide-y divide-gray-700"
+                   initial="hidden"
+                   animate="visible"
+                   variants={{
+                     visible: { transition: { staggerChildren: 0.05 } }
+                   }}
+                >
+                  {childData.selfDevelopment.map((item, index) => (
+                    <motion.tr
+                      key={index}
+                      className="hover:bg-gray-700 transition duration-150 ease-in-out"
+                      variants={itemVariants}
                     >
-                      {/* Display day number if needed, or just use color */}
-                      {/* {dayData.day} */}
-                    </div>
+                      <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                        {item.activity}
+                      </td>
+                      <td className="px-4 py-3 sm:px-6 sm:py-4 whitespace-wrap text-sm text-gray-300"> 
+                        {item.notes}
+                      </td>
+                    </motion.tr>
                   ))}
-                </div>
-                 {monthData.notes && (
-                    <p className="text-xs text-gray-400 mt-4">
-                      Catatan: {monthData.notes}
+                </motion.tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-500">Belum ada data pengembangan diri.</p>
+          )}
+        </motion.div>
+
+        {/*Kalender Presensi*/}
+        <motion.div
+          className="bg-gray-800 shadow-md rounded-lg p-4 sm:p-6"
+          variants={sectionVariants}
+        >
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Kalender Presensi</h2>
+          {childData.attendance.length > 0 ? (
+            <div className="space-y-6">
+              {childData.attendance.map((monthData, monthIndex) => {
+                const [monthName, year] = monthData.month.split(' ');
+                const monthNumber = getMonthNumber(monthName); 
+                const daysInMonth = new Date(year, monthNumber + 1, 0).getDate();
+                const firstDayOfMonth = new Date(year, monthNumber, 1).getDay();
+
+                const allDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+                return (
+                  <div key={monthIndex}>
+                    <h3 className="text-lg font-medium mb-3 text-gray-200">{monthData.month}</h3>
+                    <div className="grid grid-cols-7 gap-1 text-center text-xs sm:text-sm">
+                      {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map(day => (
+                        <div key={day} className="font-semibold text-gray-400">{day}</div>
+                      ))}
+                      {/*Kalender*/}
+                      {Array.from({ length: firstDayOfMonth }).map((_, i) => (
+                          <div key={`empty-${monthIndex}-${i}`}></div>
+                      ))}
+                      {allDays.map((day) => {
+                        const currentDate = new Date(year, monthNumber, day);
+                        const currentDayOfWeek = currentDate.getDay(); 
+
+                        const dayStatusEntry = monthData.dailyStatus.find(status => status.day === day);
+                        const status = dayStatusEntry ? dayStatusEntry.status : 'belum terisi';
+
+                        let dayBgClass = '';
+                        if (currentDayOfWeek === 0 || currentDayOfWeek === 6) {
+                          dayBgClass = 'bg-gray-700';
+                        } else {
+                          dayBgClass = getAttendanceColor(status);
+                        }
+
+                        return (
+                          <motion.div
+                            key={day}
+                            className={`p-1 rounded-sm flex items-center justify-center ${dayBgClass} text-gray-900 font-bold`}
+                            variants={itemVariants} 
+                          >
+                            {day}
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-gray-400 text-sm mt-2">
+                      Hadir: {monthData.present}, Absen: {monthData.absent}, Sakit: {monthData.sick}, Izin: {monthData.permission}
                     </p>
-                  )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">Belum ada data presensi.</p>
-        )}
+                    {monthData.notes && <p className="text-gray-400 text-sm mt-1">Catatan: {monthData.notes}</p>}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-gray-500">Belum ada data presensi.</p>
+          )}
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
+
+const getMonthNumber = (monthName) => {
+  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  return months.indexOf(monthName);
+};
+
 
 export default DashOrtu;
