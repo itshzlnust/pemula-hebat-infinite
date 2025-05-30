@@ -15,7 +15,7 @@ Sistem pelaporan progress belajar anak untuk orang tua. Aplikasi ini memungkinka
 
 - Next.js 14
 - TypeScript
-- Prisma (PostgreSQL)
+- Prisma (MySQL)
 - NextAuth.js
 - Tailwind CSS
 - React Hook Form

@@ -1,0 +1,122 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  PARENT
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String // Ingat untuk melakukan hashing pada password di aplikasi Anda
+  name      String
+  role      UserRole
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminProfile   Admin?
+  teacherProfile Teacher?
+  parentProfile  Parent?
+}
+
+model Admin {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+  // Tambahkan field spesifik admin jika ada
+}
+
+model Teacher {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  nip       String?  @unique // Nomor Induk Pegawai, opsional
+
+  classManaged Class?   @relation("ClassTeacher") // Walikelas untuk satu kelas
+  progressReportsSubmitted ProgressReport[] @relation("TeacherReports")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Parent {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  children Student[] @relation("ParentChildren") // Orang tua bisa memiliki banyak anak
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id        String   @id @default(cuid())
+  name      String
+  nis       String?  @unique // Nomor Induk Siswa, opsional
+  classId   String?
+  class     Class?   @relation(fields: [classId], references: [id], onDelete: SetNull) // Siswa tergabung dalam satu kelas
+
+  parents Parent[] @relation("ParentChildren") // Siswa bisa memiliki lebih dari satu orang tua/wali
+
+  progressReports ProgressReport[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Class {
+  id      String  @id @default(cuid())
+  name    String  @unique // Contoh: "Kelas 10A", "Kelas XI IPA 1"
+  year    Int     // Tahun ajaran, contoh: 2024
+
+  teacherId String? @unique // ID Walikelas yang mengelola kelas ini
+  teacher   Teacher? @relation("ClassTeacher", fields: [teacherId], references: [id], onDelete: SetNull)
+
+  students Student[]
+  subjects Subject[] @relation("ClassSubjects") // Mata pelajaran yang ada di kelas ini
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subject {
+  id   String @id @default(cuid())
+  name String @unique // Contoh: "Matematika", "Bahasa Indonesia"
+  code String? @unique // Kode mata pelajaran, opsional
+
+  classes         Class[]          @relation("ClassSubjects")
+  progressReports ProgressReport[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProgressReport {
+  id        String   @id @default(cuid())
+  grade     Float    // Nilai bisa berupa angka
+  comment   String?  // Komentar dari guru
+  reportDate DateTime @default(now()) // Tanggal laporan dibuat
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict) // Jika subject dihapus, laporan yg terkait tidak bisa ada
+
+  teacherId String  // Guru yang menginput laporan
+  teacher   Teacher @relation("TeacherReports", fields: [teacherId], references: [id], onDelete: Restrict) // Jika guru dihapus, laporan yg terkait tidak bisa ada
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId, subjectId, reportDate])
+}
