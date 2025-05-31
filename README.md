@@ -24,7 +24,7 @@ Sistem pelaporan progress belajar anak untuk orang tua. Aplikasi ini memungkinka
 ## Persyaratan
 
 - Node.js 18 atau lebih baru
-- PostgreSQL
+- mySQL
 - npm atau yarn
 
 ## Instalasi
@@ -47,7 +47,7 @@ Sistem pelaporan progress belajar anak untuk orang tua. Aplikasi ini memungkinka
 3. Buat file `.env` di root proyek dan isi dengan konfigurasi berikut:
 
    ```
-   DATABASE_URL="postgresql://username:password@localhost:5432/pemula_hebat"
+   DATABASE_URL="mysql://username:password@localhost:5432/pemula_hebat"
    NEXTAUTH_SECRET="your-secret-key"
    NEXTAUTH_URL="http://localhost:3000"
    ```
