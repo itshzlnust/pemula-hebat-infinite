@@ -14,7 +14,6 @@ Sistem pelaporan progress belajar anak untuk orang tua. Aplikasi ini memungkinka
 ## Teknologi yang Digunakan
 
 - Next.js 14
-- TypeScript
 - Prisma (MySQL)
 - NextAuth.js
 - Tailwind CSS
@@ -95,9 +94,10 @@ prisma/
 
 ### Orang Tua
 
-1. Akses dashboard orang tua
-2. Pilih anak yang ingin dilihat progressnya
-3. Lihat laporan progress dari guru
+1. Login dengan akun Orang Tua
+2. Akses dashboard orang tua
+3. Pilih anak yang ingin dilihat progressnya
+4. Lihat laporan progress dari guru
 
 ## Kontribusi
 
