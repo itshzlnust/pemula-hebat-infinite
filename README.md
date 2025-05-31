@@ -95,10 +95,9 @@ prisma/
 
 ### Orang Tua
 
-1. Login dengan akun orang tua
-2. Akses dashboard orang tua
-3. Pilih anak yang ingin dilihat progressnya
-4. Lihat laporan progress dari guru
+1. Akses dashboard orang tua
+2. Pilih anak yang ingin dilihat progressnya
+3. Lihat laporan progress dari guru
 
 ## Kontribusi
 
