@@ -1,5 +1,5 @@
 
-# Pemula Hebat - Learning Management System
+# Pemula Hebat - Sistem Informasi Progress Anak
 
 Sistem pelaporan progress belajar anak untuk orang tua. Aplikasi ini memungkinkan guru untuk melaporkan progress belajar siswa dan orang tua untuk memantau progress belajar anak mereka.
 
