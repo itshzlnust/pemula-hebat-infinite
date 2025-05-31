@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, getSession } from 'next-auth/react';
+import Link from 'next/link'; // Impor Link dari next/link
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -119,11 +120,23 @@ export default function LoginPage() {
               </button>
             </motion.div>
           </motion.form>
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.2 }}
-            className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400"
+            className="mt-6 text-center" // Mengubah margin top menjadi mt-6
+          >
+            <Link href="/forgot-password"> {/* Ganti dengan path halaman forgot password Anda */}
+              <span className="text-sm text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600 cursor-pointer">
+                Lupa Password?
+              </span>
+            </Link>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.4 }} // Menyesuaikan delay
+            className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400" // Mengubah margin top menjadi mt-4
           >
             {/* Anda bisa menambahkan link "Don't have an account?" di sini jika perlu */}
           </motion.p>

@@ -9,10 +9,14 @@ export async function GET(request) {
                 name: 'Budi Santoso',
                 grade: 'Kelas 7A',
                 progress: [
-                    { subject: 'Matematika', tugas: 85, uts: 78, uas: 90, predicate: 'Sangat Baik', teacherName: 'Budi Santoso' },
+                    { subject: 'Matematika', tugas: 85, uts: 78, uas: 90, predicate: 'Sangat Baik', teacherName: 'Budi Pratama' },
                     { subject: 'Bahasa Indonesia', tugas: 70, uts: 75, uas: 88, predicate: 'Baik', teacherName: 'Siti Aminah' },
-                    { subject: 'Fisika', tugas: 78, uts: 82, uas: 85, predicate: 'Baik', teacherName: 'Agus Wijaya' },
-                    { subject: 'Kimia', tugas: 65, uts: 70, uas: 72, predicate: 'Cukup', teacherName: 'Rina Lestari' },
+                    { subject: 'IPA Terpadu', tugas: 78, uts: 82, uas: 85, predicate: 'Baik', teacherName: 'Agus Wijaya' },
+                    { subject: 'Bahasa Inggris', tugas: 80, uts: 85, uas: 80, predicate: 'Baik', teacherName: 'Siti Alya' },
+                    { subject: 'IPS', tugas: 70, uts: 70, uas: 72, predicate: 'Cukup', teacherName: 'Ahmad Fauzi' },
+                    { subject: 'Seni Budaya', tugas: 85, uts: 80, uas: 72, predicate: 'Baik', teacherName: 'Rina Lestari' },
+                    { subject: 'Pendidikan Jasmani', tugas: 85, uts: 70, uas: 80, predicate: 'Baik', teacherName: 'Joko Susilo' },
+                    { subject: 'PPKN', tugas: 80, uts: 70, uas: 75, predicate: 'Cukup', teacherName: 'Maya Sari' },
                 ],
                 selfDevelopment: [
                     { activity: 'Pramuka', notes: 'Aktif mengikuti kegiatan' },
