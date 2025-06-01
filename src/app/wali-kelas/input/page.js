@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 const generateId = () => `id_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -35,7 +35,7 @@ const allStudents = [
   { id: 'siswa-009', name: 'Indah Permata', kelas: 'Kelas 9B' },
 ];
 
-const jenisTugasOptions = ['Tugas', 'UTS', 'UAS']; // Opsi untuk jenis tugas
+const jenisTugasOptions = ['Tugas', 'UTS', 'UAS'];
 
 export default function WaliKelasPage() {
   const [selectedKelas, setSelectedKelas] = useState('');
@@ -55,7 +55,7 @@ export default function WaliKelasPage() {
   ];
 
   const [progressPembelajaran, setProgressPembelajaran] = useState([
-    { mapel: mataPelajaranOptions[0] || '', jenisTugas: jenisTugasOptions[0], nilai: '' }, // Tambahkan jenisTugas
+    { mapel: mataPelajaranOptions[0] || '', jenisTugas: jenisTugasOptions[0], nilai: '' },
   ]);
 
   const [pengembanganDiri, setPengembanganDiri] = useState([
@@ -64,7 +64,6 @@ export default function WaliKelasPage() {
 
   const [presensiEntries, setPresensiEntries] = useState([]);
   const [highlightedDates, setHighlightedDates] = useState([]);
-
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   useEffect(() => {
@@ -77,7 +76,6 @@ export default function WaliKelasPage() {
     setPresensiEntries([]);
   }, [selectedKelas]);
 
-
   const handleProgressChange = (index, event) => {
     const values = [...progressPembelajaran];
     values[index][event.target.name] = event.target.value;
@@ -85,7 +83,7 @@ export default function WaliKelasPage() {
   };
 
   const addProgressField = () => {
-    setProgressPembelajaran([...progressPembelajaran, { mapel: mataPelajaranOptions[0] || '', jenisTugas: jenisTugasOptions[0], nilai: '' }]); // Tambahkan jenisTugas
+    setProgressPembelajaran([...progressPembelajaran, { mapel: mataPelajaranOptions[0] || '', jenisTugas: jenisTugasOptions[0], nilai: '' }]);
   };
 
   const removeProgressField = (index) => {
@@ -151,12 +149,13 @@ export default function WaliKelasPage() {
 
   const resetFormFields = () => {
     setSelectedStudent('');
-    setProgressPembelajaran([{ mapel: mataPelajaranOptions[0] || '', jenisTugas: jenisTugasOptions[0], nilai: '' }]); // Reset jenisTugas juga
+    setProgressPembelajaran([{ mapel: mataPelajaranOptions[0] || '', jenisTugas: jenisTugasOptions[0], nilai: '' }]);
     setPengembanganDiri([{ kegiatan: '', catatan: '' }]);
     setPresensiEntries([]);
   };
 
-  const handleSubmit = (e) => {
+  // --- SUBMIT KE BACKEND ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedKelas) {
       alert("Silakan pilih kelas terlebih dahulu.");
@@ -166,22 +165,36 @@ export default function WaliKelasPage() {
       alert("Silakan pilih siswa terlebih dahulu.");
       return;
     }
-    console.log('Data Wali Kelas Submitted:', {
-      kelas: selectedKelas,
-      studentId: selectedStudent,
-      progressPembelajaran, // progressPembelajaran sudah termasuk jenisTugas
-      pengembanganDiri,
-      presensi: presensiEntries.map(entry => ({
-        date: format(entry.date, 'yyyy-MM-dd'),
-        status: entry.status,
-      })),
-    });
-    setIsSuccessModalOpen(true);
+    try {
+      const res = await fetch('/api/wali-kelas/input', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          kelas: selectedKelas,
+          studentId: selectedStudent,
+          progressPembelajaran,
+          pengembanganDiri,
+          presensi: presensiEntries.map(entry => ({
+            date: format(entry.date, 'yyyy-MM-dd'),
+            status: entry.status,
+          })),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setIsSuccessModalOpen(true);
+        resetFormFields();
+      } else {
+        alert('Gagal menyimpan data: ' + (data.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('Terjadi error: ' + err.message);
+    }
   };
 
   const handleCloseSuccessModal = () => {
     setIsSuccessModalOpen(false);
-    router.push('/wali-kelas'); // Redirect to the main Wali Kelas page
+    router.push('/wali-kelas');
   };
 
   const sectionVariants = {
@@ -229,6 +242,7 @@ export default function WaliKelasPage() {
       </motion.h1>
 
       <form onSubmit={handleSubmit} className="space-y-10 max-w-4xl mx-auto">
+        {/* Pilih Kelas & Siswa */}
         <motion.div
           custom={0}
           variants={sectionVariants}
@@ -273,6 +287,7 @@ export default function WaliKelasPage() {
           </div>
         </motion.div>
 
+        {/* Progress Pembelajaran */}
         <motion.div
           custom={1}
           variants={sectionVariants}
@@ -287,7 +302,7 @@ export default function WaliKelasPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
-              className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto] gap-4 mb-4 p-4 border dark:border-gray-700 rounded-lg items-center" // Ubah grid-cols
+              className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto] gap-4 mb-4 p-4 border dark:border-gray-700 rounded-lg items-center"
             >
               <select
                 name="mapel"
@@ -301,7 +316,7 @@ export default function WaliKelasPage() {
                   <option key={option} value={option}>{option}</option>
                 ))}
               </select>
-              <select // Dropdown Jenis Tugas
+              <select
                 name="jenisTugas"
                 value={item.jenisTugas}
                 onChange={(e) => handleProgressChange(index, e)}
@@ -333,6 +348,7 @@ export default function WaliKelasPage() {
           </button>
         </motion.div>
 
+        {/* Pengembangan Diri */}
         <motion.div
           custom={2}
           variants={sectionVariants}
@@ -378,6 +394,7 @@ export default function WaliKelasPage() {
           </button>
         </motion.div>
 
+        {/* Presensi Siswa */}
         <motion.div
           custom={3}
           variants={sectionVariants}

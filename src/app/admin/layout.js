@@ -4,11 +4,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-// import { useRouter } from 'next/navigation'; // Uncomment if you plan to use router.push for logout
+import { useRouter } from 'next/navigation';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
-  // const router = useRouter(); // Uncomment if you plan to use router.push for logout
+  const router = useRouter();
 
   const navItems = [
     { name: 'Dashboard', href: '/admin' },
@@ -17,10 +17,7 @@ export default function AdminLayout({ children }) {
   ];
 
   const handleLogout = () => {
-    // Placeholder for actual logout logic
-    // e.g., clear session, redirect to login page
-    alert('Logout clicked! Implement your logout logic here.');
-    // router.push('/login'); // Example redirect
+    router.push('/login');
   };
 
   return (
